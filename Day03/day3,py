@@ -1,0 +1,152 @@
+#Ans 1
+def greet_morning():
+    print("Good morning!")
+greet_morning()
+#Ans 2
+def greet(name):
+    print(f"Hello, {name}!")
+greet("Nandini")
+#Ans 3
+def average(num1,num2):
+    return(num1+num2)/2
+result = average(20,76)
+#Ans 4
+print("Average is:", result)
+
+def is_even(n):
+    return n % 2 == 0
+print(is_even(3))
+#Ans 5 
+def Celsius_to_Fahrenheit(celsius):
+    return (celsius * 9/5) + 32
+temp = Celsius_to_Fahrenheit(50)
+print("Temperature in Fahrenheit:", temp)
+#Ans 6
+def safe_divide(a,b):
+    if b==0:
+        return("Error: Division by zero is not possible.")
+    return a/b
+print(safe_divide(5,0))
+print(safe_divide(10,2))
+#Ans 7
+def max_of_three(a, b, c):
+    return max(a, b, c)
+print(max_of_three(8,9,10))
+#Ans 8 
+counter = 0  
+def increment():
+    global counter  
+    counter += 1     
+increment()
+print("Counter is:", counter)
+
+#Mini project 
+def add(a, b):
+    return a + b
+
+def subtract(a, b):
+    return a - b
+
+def multiply(a, b):
+    return a * b
+
+def divide(a, b):
+    if b == 0:
+        return "Error: Cannot divide by zero"
+    return a / b
+
+def modulus(a, b):
+    return a % b
+
+def power(a, b):
+    return a ** b
+
+while True:
+    print("\n--- CLI Calculator ---")
+    print("1. Add")
+    print("2. Subtract")
+    print("3. Multiply")
+    print("4. Divide")
+    print("5. Modulus")
+    print("6. Power")
+    print("7. Quit")
+
+    choice = input("Select operation (1-7): ")
+
+    if choice == "7":
+        print("Exiting Calculator. Goodbye!")
+        break
+
+    if choice not in {"1", "2", "3", "4", "5", "6"}:
+        print("Invalid choice. Try again.")
+        continue
+
+    try:
+        a = float(input("Enter first number: "))
+        b = float(input("Enter second number: "))
+    except ValueError:
+        print("Invalid input. Please enter numeric values.")
+        continue
+
+    if choice == "1":
+        result = add(a, b)
+    elif choice == "2":
+        result = subtract(a, b)
+    elif choice == "3":
+        result = multiply(a, b)
+    elif choice == "4":
+        result = divide(a, b)
+    elif choice == "5":
+        result = modulus(a, b)
+    elif choice == "6":
+        result = power(a, b)
+
+    print("Result:", result)
+
+#Mini project 2 
+def km_to_miles(km):
+    return km * 0.621371
+
+def inches_to_cm(inch):
+    return inch * 2.54
+
+def celsius_to_fahrenheit(c):
+    return (c * 9/5) + 32
+
+def minutes_to_hours(mins):
+    return mins / 60
+
+while True:
+    print("\n--- UNIT CONVERTER ---")
+    print("1. Kilometers to Miles")
+    print("2. Inches to Centimeters")
+    print("3. Celsius to Fahrenheit")
+    print("4. Minutes to Hours")
+    print("5. Quit")
+
+    choice = input("Select an option (1-5): ")
+
+    if choice == "5":
+        print("Exiting Unit Converter. Goodbye!")
+        break
+
+    try:
+        value = float(input("Enter the value to convert: "))
+    except ValueError:
+        print("Invalid input. Please enter a number.")
+        continue
+
+    if choice == "1":
+        result = km_to_miles(value)
+        print(f"{value} kilometers = {result} miles")
+    elif choice == "2":
+        result = inches_to_cm(value)
+        print(f"{value} inches = {result} centimeters")
+    elif choice == "3":
+        result = celsius_to_fahrenheit(value)
+        print(f"{value}°C = {result}°F")
+    elif choice == "4":
+        result = minutes_to_hours(value)
+        print(f"{value} minutes = {result} hours")
+    else:
+        print("Invalid choice. Please select from 1 to 5.")
