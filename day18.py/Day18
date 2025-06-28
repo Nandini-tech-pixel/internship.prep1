@@ -1,0 +1,143 @@
+class Animal:
+ def speak(self):
+  print("Some sound")
+class Dog(Animal):
+ def speak(self):
+  print("Woof!")
+d = Dog()
+d.speak()
+
+#ANS1
+class Animal:
+    def __init__(self, name):
+        self.name = name
+
+    def speak(self):
+        return "Some generic animal sound"
+
+class Bird(Animal):
+    def speak(self):
+        return f"{self.name} says: Tweet tweet!"
+generic_animal = Animal("Creature")
+print(generic_animal.speak())
+
+parrot = Bird("Parrot")
+print(parrot.speak())
+
+
+
+class Vault:
+ def __init__(self):
+  self.__code = "1234"
+def get_code(self):
+ return self.__code
+v = Vault()
+print(v.get_code())
+
+#ANS2
+class BankAccount:
+    def __init__(self, account_holder):
+        self.account_holder = account_holder
+        self.__balance = 0   
+
+    def deposit(self, amount):
+        if amount > 0:
+            self.__balance += amount
+            print(f"Deposited ₹{amount}.")
+        else:
+            print("Deposit must be positive.")
+
+    def withdraw(self, amount):
+        if amount <= 0:
+            print("Withdrawal must be positive.")
+        elif amount > self.__balance:
+            print("Insufficient balance.")
+        else:
+            self.__balance -= amount
+            print(f"Withdrawn ₹{amount}.")
+
+    def display_balance(self):
+        print(f"Current balance: ₹{self.__balance}")
+acc = BankAccount("Nandini")
+acc.deposit(1000)
+acc.withdraw(300)
+acc.display_balance()
+
+
+class Box:
+ def __init__(self, items):
+  self.items = items
+def __len__(self):
+ return len(self.items)
+b = Box(["a", "b"])
+print(len(b))
+
+
+#ANS3 
+class Book:
+    def __init__(self, title, author, year):
+        self.title = title
+        self.author = author
+        self.year = year
+
+    def __str__(self):
+        return f"'{self.title}' by {self.author} ({self.year})"
+
+    def __len__(self):
+        return len(self.title)
+
+    def __eq__(self, other):
+        if isinstance(other, Book):
+            return self.title.lower() == other.title.lower()
+        return False
+book1 = Book("1984", "George Orwell", 1949)
+book2 = Book("1984", "Another Author", 2023)
+book3 = Book("Brave New World", "Aldous Huxley", 1932)
+
+print(len(book1))               
+print(book1 == book2)            
+print(book1 == book3)          
+
+class Math:
+ def square(x): return x*x
+def identity(cls): return cls
+print(Math.square(4))
+
+#ANS4
+class Temperature:
+    def to_fahrenheit(celsius):
+        return (celsius * 9/5) + 32
+temp_c = 37
+temp_f = Temperature.to_fahrenheit(temp_c)
+print(f"{temp_c}°C is {temp_f}°F")
+
+#MINI PROJECT
+
+class Vehicle:
+    def __init__(self, brand, model):
+        self.brand = brand
+        self.model = model
+
+    def describe(self):
+        return f"This is a {self.brand} {self.model}."
+class Car(Vehicle):
+    def __init__(self, brand, model, doors):
+        super().__init__(brand, model)
+        self.doors = doors
+
+    def describe(self):
+        return f"{self.brand} {self.model} is a car with {self.doors} doors."
+class Bike(Vehicle):
+    def __init__(self, brand, model, type_of_bike):
+        super().__init__(brand, model)
+        self.type_of_bike = type_of_bike
+
+    def describe(self):
+        return f"{self.brand} {self.model} is a {self.type_of_bike} bike."
+v1 = Vehicle("Generic", "Transport")
+c1 = Car("Toyota", "Camry", 4)
+b1 = Bike("Yamaha", "MT-15", "sports")
+
+print(v1.describe())
+print(c1.describe())
+print(b1.describe())
