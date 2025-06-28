@@ -1,0 +1,128 @@
+import psycopg2
+conn = psycopg2.connect(
+    dbname="dvdrental",       
+    user="postgres",        
+    password="hellopwis18",         
+    host="localhost",
+    port="5432"
+)
+
+cur = conn.cursor()
+t = input("Enter part of the author's name: ")
+
+cur.execute("""
+    SELECT books.title, authors.name
+    FROM books
+    JOIN authors ON books.author_id = authors.id
+    WHERE authors.name ILIKE %s
+""", ('%' + t + '%',))
+
+results = cur.fetchall()
+
+if results:
+    print("\nBooks found:")
+    for title, author in results:
+        print(f"- {title} by {author}")
+else:
+    print("No books found.")
+
+cur.close()
+
+#Reading from CSV to Populate SQLite
+import csv
+with open("data.csv") as file:
+ rows = csv.reader(file)
+ for row in rows:
+  cur.execute("INSERT INTO table VALUES (?, ?, ?)", row)
+conn.commit()
+
+#ANS1
+with open('books.csv', 'r', encoding='utf-8') as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        cur.execute(
+            """
+            INSERT INTO books (title, author, published_year, genre)
+            VALUES (%s, %s, %s, %s)
+            """,
+            (row['title'], row['author'], row['published_year'], row['genre'])
+        )
+
+conn.commit()
+cur.close()
+
+try:
+  cur.execute("SELECT * FROM books")
+  for row in cur.fetchall():
+   print(f"{row[0]} - {row[1]}")
+except Exception as e:
+ print("Error:", e)
+
+
+
+def insert_product():
+    print("Inserting product...")
+
+def view_all():
+    print("Viewing all products...")
+
+while True:
+    choice = input("1. Insert  2. View  3. Exit: ")
+    if choice == "1":
+        insert_product()
+    elif choice == "2":
+        view_all()
+    elif choice == "3":
+        break
+    else:
+        print("Invalid choice. Please enter 1, 2, or 3.")
+
+
+ 
+products = []
+
+def insert_product():
+    name = input("Enter product name: ")
+    price = input("Enter product price: ")
+    product = {"name": name, "price": price}
+    products.append(product)
+    print("Product added.\n")
+
+def view_all():
+    if not products:
+        print(" No products found.\n")
+    else:
+        print("Product List:")
+        for i, product in enumerate(products, 1):
+            print(f"{i}. {product['name']} - ₹{product['price']}")
+        print()
+
+def delete_product():
+    view_all()
+    try:
+        index = int(input("Enter product number to delete: "))
+        if 1 <= index <= len(products):
+            deleted = products.pop(index - 1)
+            print(f" Deleted: {deleted['name']}\n")
+        else:
+            print(" Invalid product number.\n")
+    except ValueError:
+        print(" Please enter a valid number.\n")
+
+while True:
+    print("==== Product Manager ====")
+    choice = input("1. Add  2. View  3. Delete  4. Exit\nEnter your choice: ")
+    
+    if choice == "1":
+        insert_product()
+    elif choice == "2":
+        view_all()
+    elif choice == "3":
+        delete_product()
+    elif choice == "4":
+        print(" Exiting...")
+        break
+    else:
+        print(" Invalid choice. Try again.\n")
+
+
