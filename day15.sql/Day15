@@ -1,0 +1,117 @@
+CREATE TABLE users (
+ id INTEGER PRIMARY KEY,
+ username TEXT UNIQUE NOT NULL,
+ age INTEGER
+);
+
+CREATE TABLE book (
+    book_id SERIAL PRIMARY KEY,
+    title TEXT NOT NULL,
+    author TEXT NOT NULL,
+    published_year INTEGER
+);
+
+ALTER TABLE book
+ADD CONSTRAINT unique_title UNIQUE (title);
+CREATE INDEX idx_author ON book(author);
+
+CREATE TABLE authors (
+ id INTEGER PRIMARY KEY,
+ name TEXT NOT NULL
+);
+
+CREATE TABLE books (
+ id INTEGER PRIMARY KEY,
+ title TEXT,
+ author_id INTEGER,
+ FOREIGN KEY(author_id) REFERENCES authors(id)
+);
+
+CREATE TABLE movies (
+    movie_id SERIAL PRIMARY KEY,
+    title TEXT NOT NULL,
+    release_year INTEGER,
+    genre TEXT
+);
+CREATE TABLE actors (
+    actor_id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    birth_year INTEGER,
+    movie_id INTEGER,
+    FOREIGN KEY (movie_id) REFERENCES movies(movie_id)
+);
+
+SELECT books.title, authors.name
+FROM books
+INNER JOIN authors ON books.author_id = authors.id;
+
+SELECT name FROM authors
+WHERE id IN (SELECT author_id FROM books WHERE title LIKE "%AI%");
+
+
+SELECT * FROM book;
+INSERT INTO book (title, author, published_year)
+VALUES 
+('Atomic Habits', 'James Clear', 2018),
+('Sapiens', 'Yuval Noah Harari', 2011),
+('The Psychology of Money', 'Morgan Housel', 2020);
+
+SELECT DISTINCT author
+FROM book
+WHERE published_year > 2015
+
+DROP TABLE IF EXISTS authors CASCADE;
+
+CREATE TABLE authors (
+    author_id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    country TEXT
+);
+ 
+DROP TABLE IF EXISTS books CASCADE;
+
+CREATE TABLE books (
+    book_id SERIAL PRIMARY KEY,
+    title TEXT NOT NULL,
+    published_year INTEGER,
+    author_id INTEGER NOT NULL,
+    FOREIGN KEY (author_id) REFERENCES authors(author_id)
+);
+
+INSERT INTO authors (name, country) VALUES
+('J.K. Rowling', 'UK'),
+('George Orwell', 'UK'),
+('Yuval Noah Harari', 'Israel'),
+('Michelle Obama', 'USA'),
+('Paulo Coelho', 'Brazil');
+
+INSERT INTO books (title, published_year, author_id) VALUES
+('Harry Potter and the Sorcerer Stone', 1997, 1),
+('Harry Potter and the Chamber of Secrets', 1998, 1),
+('1984', 1949, 2),
+('Sapiens', 2011, 3),
+('Becoming', 2018, 4),
+('The Alchemist', 1988, 5);
+
+SELECT b.title AS book_title, b.published_year, a.name AS author_name, a.country
+FROM books b
+JOIN authors a ON b.author_id = a.author_id;
+
+SELECT b.title,a.name AS author_name
+FROM books b
+JOIN authors a ON b.author_id = a.author_id
+WHERE a.country = 'UK';
+
+SELECT a.name AS author_name,
+COUNT(b.book_id) AS total_books
+FROM authors a
+LEFT JOIN books b ON a.author_id = b.author_id
+GROUP BY a.name;
+
+SELECT a.name,
+COUNT(b.book_id) AS books_written
+FROM authors a
+JOIN books b ON a.author_id = b.author_id
+GROUP BY a.name
+HAVING COUNT(b.book_id) > 1;
+ 
