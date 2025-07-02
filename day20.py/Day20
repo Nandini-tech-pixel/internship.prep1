@@ -1,0 +1,73 @@
+import pandas as pd
+data = {"Name": ["A", "B"], "Age": [22, 24]}
+df = pd.DataFrame(data)
+print(df)
+
+#ANS1
+import pandas as pd
+data = {
+    'Name': ['Nandini', 'Saanvi', 'Adwita', 'Bhumi'],
+    'Age': [20, 18, 19, 21],
+    'Grade': ['A', 'B', 'A', 'C']
+}
+df = pd.DataFrame(data)
+print(df)
+df = pd.read_csv("data.csv")
+print(df.head())
+
+#ANS2
+import pandas as pd
+df = pd.read_csv('sample_data.csv')
+print("Top 5 rows:")
+print(df.head())
+print("\nBottom 5 rows:")
+print(df.tail())
+print(df[df["Age"] > 22])
+print(df.loc[0])
+
+print(df[df["Age"] > 22])
+print(df.loc[0])
+
+#ANS3
+import pandas as pd
+data = [
+    {'Name': 'Nandini', 'Marks': 94},
+    {'Name': 'Saanvi', 'Marks': 80},
+    {'Name': 'Bhumi', 'Marks': 91},
+    {'Name': 'Adwita', 'Marks': 72},
+    {'Name': 'Vaishnavi', 'Marks': 79}
+]
+df = pd.DataFrame(data)
+high_scores = df[df['Marks'] > 80]
+print(high_scores)
+
+print(df.describe())
+df = df.dropna()
+
+#ANS4
+import pandas as pd
+import numpy as np
+data = {
+    'Name': ['Rahul', 'Suman', 'Sumit', None],
+    'Age': [25, np.nan, 30, 22],
+    'Marks': [85, 90, None, 78]
+}
+df = pd.DataFrame(data)
+print("Original DataFrame:")
+print(df)
+df_cleaned = df.dropna()
+print("\nDataFrame after dropping NaN rows:")
+print(df_cleaned)
+
+#Mini project
+import pandas as pd
+df = pd.read_csv('grades.csv')   
+failed_students = df[df['Marks'] < 40]
+average_score = df['Marks'].mean()
+top_score = df['Marks'].max()
+top_scorers = df[df['Marks'] == top_score]
+
+print("📂 All Grades:\n", df)
+print("\n❌ Failed Students:\n", failed_students)
+print("\n📊 Average Score:", average_score)
+print("\n🏆 Top Scorer(s):\n", top_scorers)
