@@ -67,7 +67,7 @@ average_score = df['Marks'].mean()
 top_score = df['Marks'].max()
 top_scorers = df[df['Marks'] == top_score]
 
-print("📂 All Grades:\n", df)
-print("\n❌ Failed Students:\n", failed_students)
-print("\n📊 Average Score:", average_score)
-print("\n🏆 Top Scorer(s):\n", top_scorers)
+print("All Grades:\n", df)
+print("\n Failed Students:\n", failed_students)
+print("\n Average Score:", average_score)
+print("\n Top Scorer(s):\n", top_scorers)
