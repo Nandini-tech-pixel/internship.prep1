@@ -1,0 +1,75 @@
+from sklearn.datasets import load_iris
+from lightgbm import LGBMClassifier # type: ignore
+import pandas as pd 
+model = LGBMClassifier()
+from sklearn.model_selection import train_test_split
+data = load_iris()
+X = pd.DataFrame(data.data, columns=data.feature_names)
+y = pd.Series(data.target, name='target')
+X_train, X_test, y_train, y_test = train_test_split (X, y, test_size=0.2, random_state=42)
+model.fit(X_train, y_train)
+print(model.score(X_test, y_test))
+
+#CatBoost
+from catboost import CatBoostClassifier
+model = CatBoostClassifier(verbose=0)
+model.fit(X_train, y_train)
+print(model.score(X_test, y_test))
+
+#Project 
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import roc_auc_score, roc_curve
+
+from sklearn.linear_model import LogisticRegression
+from xgboost import XGBClassifier
+from lightgbm import LGBMClassifier
+
+df = pd.read_csv("titanic_sample.csv")   
+df['Age'].fillna(df['Age'].median(), inplace=True)
+df['Embarked'].fillna(df['Embarked'].mode()[0], inplace=True)
+le = LabelEncoder()
+df['Sex'] = le.fit_transform(df['Sex'])
+df['Embarked'] = le.fit_transform(df['Embarked'])
+X = df[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked']]
+y = df['Survived']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+log_model = LogisticRegression(max_iter=1000)
+log_model.fit(X_train, y_train)
+xgb_model = XGBClassifier(eval_metric='logloss')
+xgb_model.fit(X_train, y_train)
+lgb_model = LGBMClassifier()
+lgb_model.fit(X_train, y_train) 
+models = {
+    "Logistic Regression": log_model,
+    "XGBoost": xgb_model,
+    "LightGBM": lgb_model
+}
+plt.figure(figsize=(8,6))
+for name, model in models.items():
+    y_pred = model.predict_proba(X_test)[:,1]
+    auc = roc_auc_score(y_test, y_pred)
+    fpr, tpr, _ = roc_curve(y_test, y_pred)
+    plt.plot(fpr, tpr, label=f"{name} (AUC={auc:.3f})")
+plt.plot([0,1], [0,1], 'k--')
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('ROC Curves - Titanic Models')
+plt.legend()
+plt.show()
+importances = pd.DataFrame({
+    'Feature': X.columns,
+    'Logistic': np.abs(log_model.coef_[0]),
+    'XGBoost': xgb_model.feature_importances_,
+    'LightGBM': lgb_model.feature_importances_
+})
+importances.set_index('Feature').plot(kind='bar', figsize=(10,6))
+plt.title('Feature Importances / Coefficients')
+plt.ylabel('Importance')
+plt.xticks(rotation=45)
+plt.show()
