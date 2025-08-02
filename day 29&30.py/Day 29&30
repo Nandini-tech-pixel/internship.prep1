@@ -1,0 +1,44 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import accuracy_score, roc_auc_score
+import xgboost as xgb
+import shap
+from lime import lime_tabular
+from fairlearn.metrics import MetricFrame, selection_rate, demographic_parity_difference
+df = pd.read_csv("heart.csv")   
+
+X = df.drop('target', axis=1)
+y = df['target']
+for col in X.select_dtypes('object'):
+    X[col] = LabelEncoder().fit_transform(X[col])
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+model = xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss')
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+print("Accuracy:", accuracy_score(y_test, y_pred))
+print("ROC-AUC:", roc_auc_score(y_test, y_pred))
+explainer = shap.TreeExplainer(model)
+shap_values = explainer.shap_values(X_test)
+shap.summary_plot(shap_values, X_test)
+shap.force_plot(explainer.expected_value, shap_values[0,:], X_test.iloc[0,:])
+explainer_lime = lime_tabular.LimeTabularExplainer(
+    training_data=np.array(X_train),
+    feature_names=X_train.columns,
+    class_names=['No Disease', 'Disease'],
+    mode='classification'
+)
+exp = explainer_lime.explain_instance(X_test.iloc[0].values, model.predict_proba)
+exp.show_in_notebook()
+sensitive_feature = X_test['sex']
+
+mf = MetricFrame(
+    metrics=selection_rate,
+    y_true=y_test,
+    y_pred=y_pred,
+    sensitive_features=sensitive_feature
+)
+print("Selection Rate per Group:", mf.by_group)
+print("Demographic Parity Difference:", demographic_parity_difference(y_test, y_pred, sensitive_features=sensitive_feature))
