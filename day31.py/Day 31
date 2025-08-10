@@ -1,0 +1,30 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+df = pd.read_csv('airline-passengers.csv')
+df['"Month"'] = df['"Month"'].apply(lambda x: x[:7])
+df['"Month"'] = pd.to_datetime(df['"Month"'], format='%Y-%m')
+df.set_index('"Month"', inplace=True)
+df.plot()
+plt.show()
+
+from statsmodels.tsa.stattools import adfuller
+model = ARIMA(df['"Passengers"'].dropna(), order=(2,1,2))
+adf_result = adfuller(df['"Passengers"'].dropna())
+print("ADF Statistic:", adf_result[0])
+
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+plot_acf(df['"Passengers"'].diff().dropna())
+plot_pacf(df['"Passengers"'].diff().dropna())
+
+from statsmodels.tsa.arima.model import ARIMA
+df['"Month"'] = pd.to_datetime(df['"Month"'])
+df.set_index('"Month"', inplace=True)
+model = ARIMA(df['"Passengers"'], order=(1,1,1))
+model_fit = model.fit()
+import matplotlib.pyplot as plt
+pred = model_fit.predict(start=df.index[0], end=df.index[-1])
+plt.figure(figsize=(10,6))
+plt.plot(df.index, df['"Passengers"'], label="Actual")
+plt.plot(df.index, pred, label="Predicted", color='red')
+plt.legend()
+plt.show()
