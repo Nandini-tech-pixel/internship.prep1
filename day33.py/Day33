@@ -1,0 +1,38 @@
+import sqlite3
+conn = sqlite3.connect('sales.db')
+cursor = conn.cursor()
+cursor.execute('''CREATE TABLE customers (customer_id INTEGER PRIMARY KEY, name TEXT, city
+TEXT)''')
+cursor.execute('''CREATE TABLE orders (order_id INTEGER PRIMARY KEY, customer_id INTEGER, amount
+REAL, order_date TEXT,
+FOREIGN KEY(customer_id) REFERENCES customers(customer_id))''')
+customers = [(1, "Alice", "New York"), (2, "Bob", "Los Angeles"), (3, "Charlie", "Chicago")]
+cursor.executemany('INSERT INTO customers VALUES (?, ?, ?)', customers)
+orders = [(1, 1, 250.5, "2025-07-10"), (2, 2, 300.0, "2025-07-12"), (3, 1, 450.75, "2025-07-13")]
+cursor.executemany('INSERT INTO orders VALUES (?, ?, ?, ?)', orders)
+conn.commit()
+
+#ANS1
+import sqlite3
+conn = sqlite3.connect("sales.db")
+cursor = conn.cursor()
+cursor.execute("""
+    SELECT COUNT(*) 
+    FROM orders 
+    WHERE customer_id = (
+        SELECT customer_id 
+        FROM customers 
+        WHERE name = 'Alice'
+    )
+""")
+print("Alice Orders:", cursor.fetchone()[0])
+
+#ANS2 
+cursor.execute("""
+    SELECT c.name, SUM(o.amount) AS total_spent
+    FROM customers c
+    JOIN orders o ON c.customer_id = o.customer_id
+    GROUP BY c.name
+    HAVING total_spent > 300
+""")
+print("Customers spending > 300:", cursor.fetchall())
