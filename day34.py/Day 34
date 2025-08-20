@@ -1,0 +1,16 @@
+#ans 1
+SELECT c.name, MAX(o.amount) as max_order
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.name;
+#ans 2
+WITH latest_orders AS (
+SELECT customer_id, MAX(order_date) as last_order
+FROM orders
+GROUP BY customer_id
+)
+SELECT c.name, o.amount
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+JOIN latest_orders lo ON o.customer_id = lo.customer_id AND o.order_date = lo.last_order
+WHERE o.amount > 300;
